@@ -1,51 +1,63 @@
 from random import randint
 
-SIZE_X = 5
-SIZE_Y = 5
-world_map = ""
-x_coordinate = 0
-y_coordinate = 2
+SIZE_X = randint(5, 10)
+SIZE_Y = randint(5, 10)
+
+x_coordinate = randint(0, SIZE_X - 1)
+y_coordinate = randint(0, SIZE_Y - 1)
+player_sign = "X|"
+
 exit_x = randint(0, SIZE_X - 1)
 exit_y = randint(0, SIZE_Y - 1)
+exit_sign = "O|"
+
+
+def generate_map(x, y, x_exit, y_exit, x_side=SIZE_X, y_side=SIZE_Y, play_sign=player_sign, sign_exit=exit_sign):
+
+    map_w = ""
+
+    for i in range(y_side):
+        ro = " |"
+        for j in range(x_side):
+            if i == y and j == x:
+                ro += play_sign
+            elif i == y_exit and j == x_exit:
+                ro += sign_exit
+            else:
+                ro += " |"
+        map_w += f"{ro}\n"
+
+    return map_w
+
+
+def move(act, x, y, x_side=SIZE_X, y_side=SIZE_Y):
+
+    if act == "u" and y > 0:
+        y -= 1
+    elif act == "d" and y < y_side:
+        y += 1
+    elif act == "l" and x > 0:
+        x -= 1
+    elif act == "r" and x < x_side:
+        x += 1
+
+    return x, y
+
 
 while True:
-    world_map = ""
-    for i in range(SIZE_Y):
-        row = " |"
-        for j in range(SIZE_X):
-            if i == y_coordinate and j == x_coordinate:
-                row += "X|"
-            elif i == exit_y and j == exit_x:
-                row += "O|"
-            else:
-                row += " |"
-        world_map += f"{row}\n"
+    world_map = generate_map(x_coordinate, y_coordinate, exit_x, exit_y)
     print(world_map)
 
     if y_coordinate == exit_y and x_coordinate == exit_x:
+
         print("You won.")
-        desire = input("Input Yes to move to the next level: ")
-        if desire == "Yes":
-            SIZE_X += 3
-            SIZE_Y += 3
-            world_map = ""
-            x_coordinate = SIZE_X - 2
-            y_coordinate = SIZE_Y - 2
-            exit_x = randint(0, SIZE_X - 1)
-            exit_y = randint(0, SIZE_Y - 1)
+        is_next_level = input("Input Y to move to the next level: ")
+        if is_next_level == "Y":
+            print(generate_map(x_coordinate, y_coordinate, exit_x, exit_y, x_side=randint(5, 15), y_side=randint(5, 15)))
         else:
             break
-        continue
 
-    action = input("Enter the action up, down, left, right: ")
+    action = input("Enter the action u / d / l / r: ")
 
-    if action == "up" and y_coordinate > 0:
-        y_coordinate -= 1
-    elif action == "down" and y_coordinate < SIZE_Y:
-        y_coordinate += 1
-    elif action == "left" and x_coordinate > 0:
-        x_coordinate -= 1
-    elif action == "right" and x_coordinate < SIZE_X:
-        x_coordinate += 1
-    else:
-        action = input("Enter the action up, down, left, right: ")
+    x_coordinate, y_coordinate = move(action, x_coordinate, y_coordinate)
+
