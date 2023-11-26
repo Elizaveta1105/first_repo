@@ -34,30 +34,39 @@ def move(act, x, y, x_side=SIZE_X, y_side=SIZE_Y):
 
     if act == "u" and y > 0:
         y -= 1
-    elif act == "d" and y < y_side:
+    elif act == "d" and y < y_side - 1:
         y += 1
     elif act == "l" and x > 0:
         x -= 1
-    elif act == "r" and x < x_side:
+    elif act == "r" and x < x_side - 1:
         x += 1
 
     return x, y
 
 
+def go_to_next_level(x_side, y_side, x, y):
+    x_side += 3
+    y_side += 3
+    x = x_side - 2
+    y = y_side - 2
+
+    return x_side, y_side, x, y
+
+
 while True:
-    world_map = generate_map(x_coordinate, y_coordinate, exit_x, exit_y)
+
+    world_map = generate_map(x_coordinate, y_coordinate, exit_x, exit_y, SIZE_X, SIZE_Y)
     print(world_map)
 
     if y_coordinate == exit_y and x_coordinate == exit_x:
-
         print("You won.")
         is_next_level = input("Input Y to move to the next level: ")
         if is_next_level == "Y":
-            print(generate_map(x_coordinate, y_coordinate, exit_x, exit_y, x_side=randint(5, 15), y_side=randint(5, 15)))
+            SIZE_X, SIZE_Y, x_coordinate, y_coordinate = go_to_next_level(SIZE_X, SIZE_Y, x_coordinate, y_coordinate)
         else:
             break
+        continue
 
     action = input("Enter the action u / d / l / r: ")
 
-    x_coordinate, y_coordinate = move(action, x_coordinate, y_coordinate)
-
+    x_coordinate, y_coordinate = move(action, x_coordinate, y_coordinate, SIZE_X, SIZE_Y)
